@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-mvn clean test</actionName>
+            <displayName>mvn clean test</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>test</goal>
+                
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-mvn clean test site</actionName>
+            <displayName>mvn clean test site</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>test</goal>
+                <goal>site</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-mvn clean test site jetty:run</actionName>
+            <displayName>mvn clean test site jetty:run</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>test</goal>
+                <goal>site</goal>
+                <goal>jetty:run</goal>
+            </goals>
+        </action>
+    </actions>
