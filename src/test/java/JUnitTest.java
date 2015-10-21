@@ -75,6 +75,9 @@ public class JUnitTest {
                 return null;
             }            
         }
+        public String GetTestString() {
+            return "[ " + parametres[0] + " " + parametres[2] + " " + parametres[1] + " = " + parametres[3] + " ] ";
+        }        
     }
 
     // Считываем из входного файла строки и создаем для каждой строки 
@@ -99,14 +102,16 @@ public class JUnitTest {
         Integer operand1    = parameters.GetOperand1();
         Integer operand2    = parameters.GetOperand2();        
         Operation operation = parameters.GetOperation();
-        Float result        = parameters.GetResult();        
+        Float result        = parameters.GetResult();
+        // Для наглядности...
+        String s = parameters.GetTestString();
         // Проверяем параметры на валидность поскольку условием задачи
         // определено что во входном файле могут быть "любые значения полей"
         // в том числе и не подходящие под условия
-        assertNotNull("Неверно задан первый операнд", operand1);
-        assertNotNull("Неверно задан второй операнд", operand2);
-        assertNotNull("Неверно задан результат вычислений", result);
-        assertTrue("Неверно задана операция", operation != Operation.INVALID);        
+        assertNotNull(s + "Неверно задан первый операнд", operand1);
+        assertNotNull(s + "Неверно задан второй операнд", operand2);
+        assertNotNull(s + "Неверно задан результат вычислений", result);
+        assertTrue(s + "Неверно задана операция", operation != Operation.INVALID);        
         // В зависимости от операции производим вычисления и сверяем полученный
         // результат с результатом входного файла
         switch (operation) {
@@ -116,23 +121,23 @@ public class JUnitTest {
                 // например (int)10.2 = 10 и 5 + 5 = 10 окажеться верным, а сумма
                 // целых чисел (из условия) не может быть дробным числом, затем
                 // сравниваем результат вычисления с результатом из входного файла
-                assertTrue("Сумма операндов не соответствует резульату", ((result - result.intValue()) == 0) && (operand1 + operand2) == result.intValue());
+                assertTrue(s + "Сумма операндов не соответствует резульату", ((result - result.intValue()) == 0) && (operand1 + operand2) == result.intValue());
                 // Сравниваем...                
                 break;
             }
             case SUB: {
                 // Так же как и написано выше, только для вычитания...
-                assertTrue("Разность операндов не соответсвует результату", ((result - result.intValue()) == 0) && (operand1 - operand2) == result.intValue());
+                assertTrue(s + "Разность операндов не соответсвует результату", ((result - result.intValue()) == 0) && (operand1 - operand2) == result.intValue());
                 break;
             }
             case MULT: {
                 // Так же как и написано выше, только для умножения...
-                assertTrue("Произведение операндов не соответсвует результату", ((result - result.intValue()) == 0) && (operand1 * operand2) == result.intValue());
+                assertTrue(s + "Произведение операндов не соответсвует результату", ((result - result.intValue()) == 0) && (operand1 * operand2) == result.intValue());
                 break;
             }
             case DIV: {
                 // Проверяем что второй операнд не 0, на ноль делить очень не хорошо!
-                assertTrue("Попытка разделить на второй операнд равный нулю", operand2 != 0);
+                assertTrue(s + "Попытка разделить на второй операнд равный нулю", operand2 != 0);
                 // Считаем реальный результат вычислений
                 float calcResult = (float)operand1 / (float)operand2;
                 // Результат деления может быть дробным числом, и при этом...
@@ -146,7 +151,7 @@ public class JUnitTest {
                 int pow = (int) Math.pow(10, length); // 10 в степени length...
                 calcResult = (float)((int)(calcResult * pow) / (float) pow);
                 // Сравниваем...
-                assertTrue("Деление операндов не соответсвует результату", calcResult == result);                
+                assertTrue(s + "Деление операндов не соответсвует результату", calcResult == result);                
                 break;
             }                    
         }
