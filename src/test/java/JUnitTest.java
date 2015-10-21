@@ -80,7 +80,6 @@ public class JUnitTest {
     @Parameters
     public static Iterable<Object[]> generateParameters() throws IOException {
         List<Object[]> parametersProvided = new ArrayList<>();
-        System.out.println("Read parametres from file...");
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(JUnitTest.class.getClass().getResourceAsStream("/data.csv")))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
@@ -100,57 +99,51 @@ public class JUnitTest {
         Operation operation = parameters.GetOperation();
         Float result        = parameters.GetResult();        
         // Проверяем параметры на валидность поскольку условием задачи
-        // определено что во входном файле могут быть любые значения полей 
+        // определено что во входном файле могут быть "любые значения полей"
         // в том числе и не подходящие под условия
-        assertNotNull("Invalid operand 1", operand1);
-        assertNotNull("Invalid operand 2", operand2);
-        assertNotNull("Invalid result", result);
-        assertTrue("Invalid operation", operation != Operation.INVALID);        
+        assertNotNull("Неверно задан первый операнд", operand1);
+        assertNotNull("Неверно задан второй операнд", operand2);
+        assertNotNull("Неверно задан результат вычислений", result);
+        assertTrue("Неверно задана операция", operation != Operation.INVALID);        
         // В зависимости от оператора производим вычисления и сверяем результат
         // с результатом входного файла
         switch (operation) {
             case SUM: {
-                // Проверяем что result у нас целое число иначе при
-                // преобразовании сторки в целое число получиться 10.2 = 10
-                // А сумма целых чисел не может быть дробным числом
-                assertTrue("Result not match sum", (result - result.intValue()) == 0);
+                // Проверяем что result у нас целое число, даже если оно float
+                // иначе при преобразовании сторки в целое число получиться,
+                // например 10.2 = 10 и 5 + 5 = 10 окажеться верным, а сумма
+                // целых чисел (из условия) не может быть дробным числом
+                // и сравниваем с результатом из входного файла
+                assertTrue("Сумма операндов не соответствует резульату", ((result - result.intValue()) == 0) && (operand1 + operand2) == result.intValue());
                 // Сравниваем...                
-                assertTrue("Result not match sum", (operand1 + operand2) == result.intValue());
                 break;
             }
             case SUB: {
-                // Проверяем что result у нас целое число иначе при
-                // преобразовании сторки в целое число получиться 10.2 = 10
-                // А разность целых чисел не может быть дробным числом
-                assertTrue("Result not match sub", (result - result.intValue()) == 0);
-                // Сравниваем...                
-                assertTrue("Result not match sub", (operand1 - operand2) == result.intValue());                
+                // Так же как и написано выше, только для вычитания...
+                assertTrue("Разность операндов не соответсвует результату", ((result - result.intValue()) == 0) && (operand1 - operand2) == result.intValue());
                 break;
             }
             case MULT: {
-                // Проверяем что result у нас целое число иначе при
-                // преобразовании сторки в целое число получиться 10.2 = 10
-                // А сумма произведение чисел не может быть дробным числом                
-                assertTrue("Result not match mult", (result - result.intValue()) == 0);
-                // Сравниваем...                
-                assertTrue("Result not match mult", (operand1 * operand2) == result.intValue());                
+                // Так же как и написано выше, только для умножения...
+                assertTrue("Произведение операндов не соответсвует результату", ((result - result.intValue()) == 0) && (operand1 * operand2) == result.intValue());
                 break;
             }
             case DIV: {
-                // Проверяем что второй операнд не 0, на ноль делить не можно
-                assertTrue("Division by zero", operand2 != 0);
+                // Проверяем что второй операнд не 0, на ноль делить очень не хорошо!
+                assertTrue("Попытка разделить на второй операнд равный нулю", operand2 != 0);
                 // Считаем реакльный результат вычислений
                 float calcResult = (float)operand1 / (float)operand2;
                 // Считаем длинну цифр после запятой в конечном результате,
-                // так как 4 / 3 = 1.333333333... а в файле может быть записано
-                // 1.33 что, в принципе, верно, и условиями задачи не оговорено
+                // так как, к примеру, 4 разделить на 3 = 1.333333333... а в
+                // файле может быть записано 1.33 что, в принципе, верно, и
+                // условиями задачи не оговорено
                 int length = String.valueOf(result).split("\\.")[1].length();
                 // Оставляем в вычисленном результае столько же цифр после
                 // запятой сколько и в конечном
-                int pow = (int) Math.pow(10, length);
+                int pow = (int) Math.pow(10, length); // 10 в степени...
                 calcResult = (float)((int)(calcResult * pow) / (float) pow);
                 // Сравниваем...
-                assertTrue("Result not match div", calcResult == result);                
+                assertTrue("Деление операндов не соответсвует результату", calcResult == result);                
                 break;
             }                    
         }
